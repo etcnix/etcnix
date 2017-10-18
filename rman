@@ -1,0 +1,83 @@
+CROSSCHECK ARCHIVELOG ALL;
+DELETE EXPIRED ARCHIVELOG ALL;
+CHANGE ARCHIVELOG ALL CROSSCHECK;
+delete archivelog until time 'sysdate-67';
+
+list incarnation;
+BACKUP CHECK LOGICAL VALIDATE DATABASE;
+show all;
+list incarnation of database;
+report schema;
+list backup summary;
+list backup of datafile 1;
+list copy of datafile 1;
+
+
+
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+allocate channel c2 type disk;
+backup as compressed backupset
+format '/oradata/org2_backup/rman_%d_%t_%U.bkp'
+database plus archivelog;
+}
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+backup as compressed backupset
+format '/oradata/org2_backup/rman_%d_%t_%U.bkp'
+archivelog all;
+}
+Run {
+allocate channel c1 type disk;
+delete force noprompt obsolete;
+}
+quit;
+
+
+
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+allocate channel c2 type disk;
+allocate channel c3 type disk;
+allocate channel c4 type disk;
+allocate channel c5 type disk;
+backup as compressed backupset
+format '/oradata/backup/rman_%d_%t_%U.bkp'
+database plus archivelog;
+}
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+backup as compressed backupset
+format '/oradata/backup/rman_%d_%t_%U.bkp'
+archivelog all;
+}
+Run {
+allocate channel c1 type disk;
+delete noprompt obsolete;
+}
+quit;
+
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+allocate channel c2 type disk;
+backup as compressed backupset
+format '/oradata1/ictest2_backup/rman_%d_%t_%U.bkp'
+database plus archivelog;
+}
+sql 'alter system archive log current';
+Run {
+allocate channel c1 type disk;
+backup as compressed backupset
+format '/oradata1/ictest2_backup/rman_%d_%t_%U.bkp'
+archivelog all;
+}
+Run {
+allocate channel c1 type disk;
+delete force noprompt obsolete;
+}
+quit;
